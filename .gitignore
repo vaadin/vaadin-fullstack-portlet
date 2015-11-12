@@ -67,3 +67,5 @@ nb-configuration.xml
 
 # Vaadin
 src/main/webapp/VAADIN/widgetsets/
+styles.scss.cache
+rebel.xml
