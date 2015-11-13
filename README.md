@@ -33,4 +33,4 @@ mvn package liferay:deploy
 
 ### Optional: use different database
 
-The example uses in memory h2 database by default. To switch into another database, ensure you have proper drivers on your classpath and define the database url in your [applicaiton.properties](https://github.com/mstahv/spring-data-vaadin-portlet/blob/master/src/main/resources/application.properties#L5-L9) file.
+The example uses in memory h2 database by default. To switch into another database, ensure you have proper drivers on your classpath and define the database url in your [application.properties](https://github.com/mstahv/spring-data-vaadin-portlet/blob/master/src/main/resources/application.properties#L5-L9) file.

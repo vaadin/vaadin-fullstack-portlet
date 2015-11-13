@@ -32,7 +32,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 @Theme("mytheme")
 @SuppressWarnings({ "serial", "deprecation" })
-@Widgetset("com.example.plugins.AppWidgetSet")
+@Widgetset("org.vaadin.springportlet.AppWidgetSet")
 @VaadinPortletUI
 public class LibraryPortletUI extends UI {
 
