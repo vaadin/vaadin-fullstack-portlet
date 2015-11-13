@@ -3,14 +3,8 @@ package org.vaadin.springportlet;
 import java.text.DateFormat;
 import java.util.Locale;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.EventRequest;
-import javax.portlet.EventResponse;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,10 +69,15 @@ public class LibraryPortletUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-
         ((VaadinPortletSession) VaadinPortletSession.getCurrent())
-                .addPortletListener(
-                        new MyRenderRequestHandler(this::listBooks));
+                .addPortletListener(new RenderRequestListener() {
+
+                    @Override
+                    public void handleRenderRequest(RenderRequest request,
+                            RenderResponse response, UI uI) {
+                        listBooks();
+                    }
+                });
 
         bookListing = new Table();
         bookContainer = new BeanItemContainer<>(Book.class);
@@ -220,37 +219,12 @@ public class LibraryPortletUI extends UI {
         bookForm.getPopup().close();
     }
 
-    public static class MyRenderRequestHandler implements PortletListener {
-
-        private Runnable runnable;
-
-        public MyRenderRequestHandler(Runnable runnable) {
-            this.runnable = runnable;
-        }
-
-        @Override
-        public void handleResourceRequest(ResourceRequest request,
-                ResourceResponse response, UI uI) {
-            // do nothing
-        }
+    private final PortletListener myPortletListener = new RenderRequestListener() {
 
         @Override
         public void handleRenderRequest(RenderRequest request,
                 RenderResponse response, UI uI) {
-            runnable.run();
+            listBooks();
         }
-
-        @Override
-        public void handleEventRequest(EventRequest request,
-                EventResponse response, UI uI) {
-            // do nothing
-        }
-
-        @Override
-        public void handleActionRequest(ActionRequest request,
-                ActionResponse response, UI uI) {
-            // do nothing
-        }
-    }
-
+    };
 }
