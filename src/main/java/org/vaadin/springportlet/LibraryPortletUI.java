@@ -43,23 +43,21 @@ import com.vaadin.ui.themes.ValoTheme;
 public class LibraryPortletUI extends UI {
 
     private static final String PROPERTY_EDIT = "edit";
-
     private static final String PROPERTY_LOAN = "loan";
-
     private static final String PROPERTY_PUBLISH_DATE = "publishDate";
-
     private static final String PROPERTY_NAME = "name";
+
+    private final static String MESSAGE_MIDAIR_COLLISION = "Someone else has modified the content. Please try again.";
+    private static final float LOAN_BUTTON_WIDTH = 90.0f;
 
     @Autowired
     private ApplicationContext applicationContext;
+
     @Autowired
     private LibraryPortletUserService service;
 
     private Table bookListing;
-
     private BeanItemContainer<Book> bookContainer;
-
-    private final static String MESSAGE_MIDAIR_COLLISION = "Someone else has modified the content. Please try again.";
 
     static Logger log = Logger.getLogger(LibraryPortletUI.class);
 
@@ -73,7 +71,6 @@ public class LibraryPortletUI extends UI {
         public static void show(String caption) {
             new MyWarningNotification(caption).show(Page.getCurrent());
         }
-
     }
 
     @Override
@@ -88,6 +85,9 @@ public class LibraryPortletUI extends UI {
         bookListing.setContainerDataSource(bookContainer);
         bookListing.setHeight("250px");
         bookListing.setWidth("100%");
+        bookListing.addStyleName(ValoTheme.TABLE_BORDERLESS);
+        bookListing.addStyleName(ValoTheme.TABLE_NO_HORIZONTAL_LINES);
+        bookListing.addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
         bookListing.addGeneratedColumn(PROPERTY_LOAN,
                 (table, itemId, columnId) -> {
                     Book entity = (Book) itemId;
@@ -96,18 +96,22 @@ public class LibraryPortletUI extends UI {
                         if (service.isAllowedToBorrow()) {
                             Button borrow = new Button("Borrow",
                                     e -> onBorrow(entity));
-                            borrow.setStyleName(ValoTheme.BUTTON_PRIMARY);
+                            borrow.setWidth(LOAN_BUTTON_WIDTH, Unit.PIXELS);
+                            borrow.addStyleName(ValoTheme.BUTTON_PRIMARY);
+                            borrow.addStyleName(ValoTheme.BUTTON_SMALL);
                             return borrow;
                         } else {
                             return "Login to loan";
                         }
                     } else if (service.isBorrowedByMe(entity)) {
-                        Button mark = new Button("Mark as returned",
+                        Button mark = new Button("Return",
                                 e -> onMarkAsReturned(entity));
-                        mark.setStyleName(ValoTheme.BUTTON_DANGER);
+                        mark.setWidth(LOAN_BUTTON_WIDTH, Unit.PIXELS);
+                        mark.addStyleName(ValoTheme.BUTTON_DANGER);
+                        mark.addStyleName(ValoTheme.BUTTON_SMALL);
                         return mark;
                     } else {
-                        return "borrowed by " + borrower.getFirstName() + " "
+                        return "Borrowed by " + borrower.getFirstName() + " "
                                 + borrower.getLastName();
                     }
                 });
@@ -118,12 +122,13 @@ public class LibraryPortletUI extends UI {
                         Button edit = new Button(null,
                                 e -> onRowEdit((Book) itemId));
                         edit.setIcon(FontAwesome.PENCIL);
+                        edit.addStyleName(ValoTheme.BUTTON_SMALL);
                         return edit;
                     });
             bookListing.setVisibleColumns(PROPERTY_NAME, PROPERTY_PUBLISH_DATE,
                     PROPERTY_LOAN, PROPERTY_EDIT);
             bookListing.setColumnHeaders("Name", "Publish Date", "", "");
-            bookListing.setColumnWidth(PROPERTY_EDIT, 50);
+            bookListing.setColumnWidth(PROPERTY_EDIT, 60);
         } else {
             bookListing.setVisibleColumns(PROPERTY_NAME, PROPERTY_PUBLISH_DATE,
                     PROPERTY_LOAN);
@@ -146,7 +151,7 @@ public class LibraryPortletUI extends UI {
 
         if (service.isAdmin()) {
             Button add = new Button("Add new Book", this::onAddClick);
-            // add.setIcon(FontAwesome.PLUS);
+            add.setIcon(FontAwesome.PLUS);
             layout.addComponent(add);
         }
     }
