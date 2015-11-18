@@ -1,3 +1,5 @@
+![Portlet screenshot](https://cloud.githubusercontent.com/assets/1398470/11235417/2d701de6-8dda-11e5-9efc-a2fb25bf5476.png)
+
 #Example of portlet with Vaadin + Spring Boot for Liferay
 
 ## How to deploy this portlet to Liferay:
